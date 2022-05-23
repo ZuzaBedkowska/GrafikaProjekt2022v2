@@ -1,0 +1,25 @@
+﻿  Source.cpp
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(32,23): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(36,24): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(36,43): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(37,24): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(37,43): warning C4244: "argument": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(38,22): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(40,22): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(42,22): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(44,22): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(46,22): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(48,22): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(140,19): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(142,19): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(144,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(146,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(148,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(150,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(153,19): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(155,19): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(157,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(159,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(161,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+C:\Users\Zuza\source\repos\GrafikaProjekt2022v2\Source.cpp(163,17): warning C4244: "=": konwersja z "double" do "GLfloat", możliwa utrata danych
+  OpenGL-coloredTriangles3.vcxproj -> C:\Users\Zuza\Source\Repos\GrafikaProjekt2022v2\x64\Debug\Koteczkowy_Szescian.exe

@@ -18,14 +18,14 @@ const unsigned int width = 800;
 const unsigned int height = 800;
 constexpr auto PI = 3.14159265358979323846;
 
-void makeSphere(int n,int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
+void makeSphere(int n, int & index, int & index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
 {
+	int index1 = index;
 	int stack = n; //stack - ilosc kwadratow na poludniku
 	int sector = n; //sector - ilosc kwadratow na rownolezniku
 	double sectorStep = 2.0 * PI / sector; //sector step - kat co ktory beda pojawiac sie nowe kwadraty na rownolezniku (360/n)
 	double stackStep = PI / stack; //kat co ktory beda pojawiac sie nowe kwadraty na poludniku (180/n)
 	double newX = 0.0, newY = 0.0, newZ = 0.0; //nowe wspolrzedne
-	int index = p * n * (n+1) * 6 + 100 *10 * 2 * 6; //indeks do zapisu w tablicy
 	for (int i = 0; i <= stack; ++i) // dla kazdego kwadratu na poludniku
 	{
 		double stackAngle = PI / 2 - i * stackStep; //wyznacz kat o ktory jestesmy odchyleni od plaszczyzny xy (od 90 do -90)
@@ -50,7 +50,7 @@ void makeSphere(int n,int p, GLfloat vertices[], GLuint indices[], double x, dou
 		}	
 	}
 	int k1 = 0, k2 = 0; //numery wierzcholkow do laczenia - k1 to przegladany wierzcholek a k2 to wierzcholek tuz pod nim
-	index = p * n * (n - 1) * 6 + 10 * 100 * 2; //indeks do zapisu w tablicy
+	int index3 = (index1)/6;
 	for (int i = 0; i < stack; ++i)
 	{
 		for (int j = 0; j < sector; ++j)
@@ -58,84 +58,84 @@ void makeSphere(int n,int p, GLfloat vertices[], GLuint indices[], double x, dou
 			//gorne trojkaty
 			if (i == 0)
 			{
-				k1 = j;
-				k2 = j + sector;
-				indices[index] = k1;
-				index++;
-				indices[index] = k2;
-				index++;
+				k1 = j + index3;
+				k2 = j + sector + index3;
+				indices[index2] = k1;
+				index2++;
+				indices[index2] = k2;
+				index2++;
 				if (k1 % sector != sector - 1)
 				{
-					indices[index] = k2 + 1;
-					index++;
+					indices[index2] = k2 + 1;
+					index2++;
 				}
 				else
 				{
-					indices[index] = k2 + 1 - sector;
-					index++;
+					indices[index2] = k2 + 1 - sector;
+					index2++;
 				}
 			}
 			//dolne trojkaty
 			else if (i == stack - 1)
 			{
-				k1 = i * sector + j;
+				k1 = i * sector + j + index3;
 				k2 = k1 + sector;
-				indices[index] = k1;
-				index++;
-				indices[index] = k2;
-				index++;
+				indices[index2] = k1;
+				index2++;
+				indices[index2] = k2;
+				index2++;
 				if (k1 % sector != sector - 1)
 				{
-					indices[index] = k1 + 1;
-					index++;
+					indices[index2] = k1 + 1;
+					index2++;
 				}
 				else
 				{
-					indices[index] = k1 + 1 - sector;
-					index++;
+					indices[index2] = k1 + 1 - sector;
+					index2++;
 				}
 				
 			}
 			//reszta
 			else
 			{
-				k1 = i * sector + j;
+				k1 = i * sector + j + index3;
 				k2 = k1 + (sector);
-				indices[index] = k1;
-				index++;
-				indices[index] = k2;
-				index++;
+				indices[index2] = k1;
+				index2++;
+				indices[index2] = k2;
+				index2++;
 				if (k1 % sector != sector - 1)
 				{
-					indices[index] = k1 + 1;
-					index++;
-					indices[index] = k1 + 1;
-					index++;
-					indices[index] = k2 + 1;
-					index++;
+					indices[index2] = k1 + 1;
+					index2++;
+					indices[index2] = k1 + 1;
+					index2++;
+					indices[index2] = k2 + 1;
+					index2++;
 				}
 				else
 				{
-					indices[index] = k1 + 1 - sector;
-					index++;
-					indices[index] = k1 + 1 - sector;
-					index++;
-					indices[index] = k2 + 1 - sector;
-					index++;
+					indices[index2] = k1 + 1 - sector;
+					index2++;
+					indices[index2] = k1 + 1 - sector;
+					index2++;
+					indices[index2] = k2 + 1 - sector;
+					index2++;
 				}
-				indices[index] = k2;
-				index++;
+				indices[index2] = k2;
+				index2++;
 			}
 
 		}
 	}
 }
 
-void makeOrbit(int n, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
+void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
 {
 	double angle = 2 * PI / (n*10); //kat miedzy ramionami trojkata
 	double angle1 = 0.0;
-	for (int i = p * 2 * 6 * n*10; i < (p + 1) * 2 * 6 * n*10; ++i)
+	for (int i = p * 2 * 6 * n*10 + index; i < (p + 1) * 2 * 6 * n*10 + index; ++i)
 	{
 		vertices[i] = x + r * cos(angle1); //pierwszy wierzcholek z f trygonometrycznych
 		i++;
@@ -162,7 +162,7 @@ void makeOrbit(int n, int p, GLfloat vertices[], GLuint indices[], double x, dou
 		i++;
 		vertices[i] = blue;
 	}
-	for (int i = p * 2 * n*10; i < (p + 1) * 2 * n*10; ++i)
+	for (int i = p * 2 * n*10 + index2; i < (p + 1) * 2 * n*10 + index2; ++i)
 	{
 		indices[i] = i; //pierwszy wierzcholek kazdego trojkata to srodek kola
 	}
@@ -178,8 +178,8 @@ int main()
 {
 	int n = 10; //do zrobienia "siatki kuli" - tyle kwadratow bedzie na kazdym rownolezniku i poludniku co daje n*n*2 trojkatow
 	int p = 2 * 10 * n*10;
-	GLfloat vertices[10*100*2*6+ 10 * 11 * 10 * 6]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
-	GLuint indices[100*10*2+10 * 10 * 9 * 3 * 2]{};
+	GLfloat vertices[12000 + 10 * 11 * 10 * 6]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
+	GLuint indices[2000 + 10 * 10 * 9 * 3 * 2]{};
 	vector <double> distances(10, 0.0);
 	for (int i = 0; i < 9; ++i)
 	{
@@ -190,7 +190,7 @@ int main()
 	vector <double> z(10, 0.0);
 	vector <double> angle1(10, 0.0);
 	vector <double> angle2(10, 0.0);
-	angle1[3] = 2 * PI / 1000; //obrot ziemi
+	angle1[3] = 2 * PI / 10000; //obrot ziemi
 	angle1[1] = angle1[3] / 0.24; //proporcjonalne przeszktalcenie czasu obrotu ziemi w programie na czas obrotu merkurego
 	angle1[2] = angle1[3] / 0.615;
 	angle1[4] = angle1[3] / 1.88;
@@ -241,17 +241,48 @@ int main()
 	
 	while (!glfwWindowShouldClose(window))
 	{
+		int index1 = 0, index2 = 0;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		makeOrbit(n, 0, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[1]); //m orbit
-		makeOrbit(n, 1, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[2]); //v orbit
-		makeOrbit(n, 2, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[3]); //e orbit
-		makeOrbit(n, 3, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[4]); //m orbit
-		makeOrbit(n, 4, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[5]); //j orbit
-		makeOrbit(n, 5, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[6]); //s orbit
-		makeOrbit(n, 6, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[7]); //u orbit
-		makeOrbit(n, 7, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[8]); //n orbit
-		makeSphere(n, 0, vertices, indices, x[0], y[0], z[0], 1.0, 0.98, 0.2219, 0.08);
+		makeSphere(n, index1, index2, 0, vertices, indices, x[0], y[0], z[0], 1.0, 0.98, 0.2219, 0.08); //s, argumenty od y[0] do 0.08 to kolorki w formacie red, green, blue
+		calculateCirclePosition(x[1], y[1], x_s, y_s, distances[1], angle2[1]);
+		angle2[1] += angle1[1];
+		makeSphere(n, index1, index2, 1, vertices, indices, x[1], y[1], z[1], 0.7412, 0.4314, 0.1176, 0.01); //m
+		calculateCirclePosition(x[2], y[2], x_s, y_s, distances[2], angle2[2]);
+		angle2[2] += angle1[2];
+		makeSphere(n, index1, index2, 2, vertices, indices, x[2], y[2], z[2], 0.6235, 0.5412, 0.4196, 0.025); //v
+		calculateCirclePosition(x[3], y[3], x_s, y_s, distances[3], angle2[3]);
+		angle2[3] += angle1[3];
+		makeSphere(n, index1, index2, 3, vertices, indices, x[3], y[3], z[3], 0.1451, 0.5725, 0.7725, 0.028); //e
+		calculateCirclePosition(x[4], y[4], x_s, y_s, distances[4], angle2[4]);
+		angle2[4] += angle1[4];
+		makeSphere(n, index1, index2, 4, vertices, indices, x[4], y[4], z[4], 0.7569, 0.2392, 0.0588, 0.015); //m
+		calculateCirclePosition(x[5], y[5], x_s, y_s, distances[5], angle2[5]);
+		angle2[5] += angle1[5];
+		makeSphere(n, index1, index2, 5, vertices, indices, x[5], y[5], z[5], 0.4941, 0.2863, 0.1176, 0.05); //j
+		calculateCirclePosition(x[6], y[6], x_s, y_s, distances[6], angle2[6]);
+		angle2[6] += angle1[6];
+		makeSphere(n, index1, index2, 6, vertices, indices, x[6], y[6], z[6], 0.8509, 0.7333, 0.5608, 0.035); //s
+		calculateCirclePosition(x[7], y[7], x_s, y_s, distances[7], angle2[7]);
+		angle2[7] += angle1[7];
+		makeSphere(n, index1, index2, 7, vertices, indices, x[7], y[7], z[7], 0.0353, 0.3216, 0.8706, 0.025); //u
+		calculateCirclePosition(x[8], y[8], x_s, y_s, distances[8], angle2[8]);
+		angle2[8] += angle1[8];
+		makeSphere(n, index1, index2, 8, vertices, indices, x[8], y[8], z[8], 0.2706, 0.8941, 0.9922, 0.025); //n
+		calculateCirclePosition(x[9], y[9], x[3], y[3], 0.05, angle2[9]);
+		angle2[9] += angle1[9];
+		makeSphere(n, index1, index2, 9, vertices, indices, x[9], y[9], z[9], 0.78, 0.78, 0.78, 0.01); //moon
+
+		/*makeOrbit(n, index1, index2, 0, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[1]); //m orbit
+		makeOrbit(n, index1, index2, 1, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[2]); //v orbit
+		makeOrbit(n, index1, index2, 2, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[3]); //e orbit
+		makeOrbit(n, index1, index2, 3, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[4]); //m orbit
+		makeOrbit(n, index1, index2, 4, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[5]); //j orbit
+		makeOrbit(n, index1, index2, 5, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[6]); //s orbit
+		makeOrbit(n, index1, index2, 6, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[7]); //u orbit
+		makeOrbit(n, index1, index2, 7, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[8]); //n orbit
+		makeOrbit(n, index1, index2, 8, vertices, indices, x[6], y[6], z[6], 1, 1, 1, 0.045);  //s ring
+		makeOrbit(n, index1, index2, 9, vertices, indices, x[3], y[3], z[3], 1, 1, 1, 0.05);  //moon orbit*/
 		VAO VAO1;
 		VAO1.Bind();
 
@@ -294,6 +325,23 @@ int main()
 		// Draw primitives, number of indices, datatype of indices, index of indices
 		//glDrawElements(GL_LINES, 2 * 10 * n, GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_LINES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		
+		/*for (int i = 0; i < (sizeof(indices)) / 4; ++i)
+		{
+			if (i % 540 == 0)
+			{
+				cout << "sphere nr " << i / 540 << "\n";
+			}
+			if (i % 3 == 0)
+			{
+				cout << i / 3 << ". ";
+			}
+			cout << indices[i] << " ";
+			if (i % 3 == 2)
+			{
+				cout << "\n";
+			}
+		}*/
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);

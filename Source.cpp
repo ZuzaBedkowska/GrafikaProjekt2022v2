@@ -135,6 +135,7 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 {
 	double angle = 2 * PI / (n * 10); //kat miedzy ramionami trojkata
 	double angle1 = 0.0;
+	int index1 = index;
 	for (int i = p * 2 * 6 * n * 10 + index; i < (p + 1) * 2 * 6 * n * 10 + index; ++i)
 	{
 		vertices[i] = x + r * cos(angle1); //pierwszy wierzcholek z f trygonometrycznych
@@ -162,9 +163,10 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 		i++;
 		vertices[i] = blue;
 	}
-	for (int i = p * 2 * n * 10 + index2; i < (p + 1) * 2 * n * 10 + index2; ++i)
+	int index2_kopia = index2;
+	for (int i = p*2*n*10;i < (p + 1)*2 * n * 10; ++i)
 	{
-		indices[i] = i; //pierwszy wierzcholek kazdego trojkata to srodek kola
+		indices[i + index2] = i + index1/6; 
 	}
 }
 
@@ -241,7 +243,7 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		int index1 = 0, index2 = 0;
+		int index1 = 0, index2 = 0;// indeksy ostatnich zapelnionych miejsc w vertices i indices
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		makeSphere(n, index1, index2, 0, vertices, indices, x[0], y[0], z[0], 1.0, 0.98, 0.2219, 0.08); //s, argumenty od y[0] do 0.08 to kolorki w formacie red, green, blue
@@ -271,9 +273,26 @@ int main()
 		makeSphere(n, index1, index2, 8, vertices, indices, x[8], y[8], z[8], 0.2706, 0.8941, 0.9922, 0.025); //n
 		calculateCirclePosition(x[9], y[9], x[3], y[3], 0.05, angle2[9]);
 		angle2[9] += angle1[9];
-		makeSphere(n, index1, index2, 9, vertices, indices, x[9], y[9], z[9], 0.78, 0.78, 0.78, 0.01); //moon
+		makeSphere(n, index1, index2, 9, vertices, indices, x[9], y[9], z[9], 0.78, 0.78, 0.78, 0.01); //moon)
 
-		/*makeOrbit(n, index1, index2, 0, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[1]); //m orbit
+		/*for (int i = 0; i < (sizeof(indices)) / 4; ++i)
+		{
+			if (i % 540 == 0)
+			{
+				cout << "sphere nr " << i / 540 << "\n";
+			}
+			if (i % 3 == 0)
+			{
+				cout << i / 3 << ". ";
+			}
+			cout << indices[i] << " ";
+			if (i % 3 == 2)
+			{
+				cout << "\n";
+			}
+		}*/
+
+		makeOrbit(n, index1, index2, 0, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[1]); //m orbit
 		makeOrbit(n, index1, index2, 1, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[2]); //v orbit
 		makeOrbit(n, index1, index2, 2, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[3]); //e orbit
 		makeOrbit(n, index1, index2, 3, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[4]); //m orbit
@@ -282,7 +301,7 @@ int main()
 		makeOrbit(n, index1, index2, 6, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[7]); //u orbit
 		makeOrbit(n, index1, index2, 7, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[8]); //n orbit
 		makeOrbit(n, index1, index2, 8, vertices, indices, x[6], y[6], z[6], 1, 1, 1, 0.045);  //s ring
-		makeOrbit(n, index1, index2, 9, vertices, indices, x[3], y[3], z[3], 1, 1, 1, 0.05);  //moon orbit*/
+		makeOrbit(n, index1, index2, 9, vertices, indices, x[3], y[3], z[3], 1, 1, 1, 0.05);  //moon orbit
 		VAO VAO1;
 		VAO1.Bind();
 
@@ -323,10 +342,10 @@ int main()
 		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw primitives, number of indices, datatype of indices, index of indices
-		//glDrawElements(GL_LINES, 2 * 10 * n, GL_UNSIGNED_INT, 0);
-		glDrawElements(GL_LINES, sizeof(indices), GL_UNSIGNED_INT, 0);
-
-		/*for (int i = 0; i < (sizeof(indices)) / 4; ++i)
+		glDrawElements(GL_TRIANGLES, 5400, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES, 2000, GL_UNSIGNED_INT, (void*)(5400 * sizeof(GL_UNSIGNED_INT)));
+		/*cout << "\n\n\n\n";
+		for (int i = 0; i < (sizeof(indices)) / 4; ++i)
 		{
 			if (i % 540 == 0)
 			{

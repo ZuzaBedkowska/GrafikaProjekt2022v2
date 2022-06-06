@@ -18,7 +18,7 @@ const unsigned int width = 800;
 const unsigned int height = 800;
 constexpr auto PI = 3.14159265358979323846;
 
-void makeSphere(int n, int & index, int & index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
+void makeSphere(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
 {
 	int index1 = index;
 	int stack = n; //stack - ilosc kwadratow na poludniku
@@ -30,7 +30,7 @@ void makeSphere(int n, int & index, int & index2, int p, GLfloat vertices[], GLu
 	{
 		double stackAngle = PI / 2 - i * stackStep; //wyznacz kat o ktory jestesmy odchyleni od plaszczyzny xy (od 90 do -90)
 		newZ = z + r * sinf(stackAngle); //wyznacz z ze wzoru
-		for(int j = 0; j < sector; ++j) //dla kazdego kwadratu na rownolezniku
+		for (int j = 0; j < sector; ++j) //dla kazdego kwadratu na rownolezniku
 		{
 			double sectorAngle = j * sectorStep; //wyznacz kat o ktory jestesmy odchyleni od plaszczyzny zy
 			newX = x + r * cosf(stackAngle) * cosf(sectorAngle); //wyznacz x i y ze wzoru z uwzglednieniem polozenia srodka
@@ -47,10 +47,10 @@ void makeSphere(int n, int & index, int & index2, int p, GLfloat vertices[], GLu
 			index++;
 			vertices[index] = blue;
 			index++;
-		}	
+		}
 	}
 	int k1 = 0, k2 = 0; //numery wierzcholkow do laczenia - k1 to przegladany wierzcholek a k2 to wierzcholek tuz pod nim
-	int index3 = (index1)/6;
+	int index3 = (index1) / 6;
 	for (int i = 0; i < stack; ++i)
 	{
 		for (int j = 0; j < sector; ++j)
@@ -94,7 +94,7 @@ void makeSphere(int n, int & index, int & index2, int p, GLfloat vertices[], GLu
 					indices[index2] = k1 + 1 - sector;
 					index2++;
 				}
-				
+
 			}
 			//reszta
 			else
@@ -133,9 +133,9 @@ void makeSphere(int n, int & index, int & index2, int p, GLfloat vertices[], GLu
 
 void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
 {
-	double angle = 2 * PI / (n*10); //kat miedzy ramionami trojkata
+	double angle = 2 * PI / (n * 10); //kat miedzy ramionami trojkata
 	double angle1 = 0.0;
-	for (int i = p * 2 * 6 * n*10 + index; i < (p + 1) * 2 * 6 * n*10 + index; ++i)
+	for (int i = p * 2 * 6 * n * 10 + index; i < (p + 1) * 2 * 6 * n * 10 + index; ++i)
 	{
 		vertices[i] = x + r * cos(angle1); //pierwszy wierzcholek z f trygonometrycznych
 		i++;
@@ -162,7 +162,7 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 		i++;
 		vertices[i] = blue;
 	}
-	for (int i = p * 2 * n*10 + index2; i < (p + 1) * 2 * n*10 + index2; ++i)
+	for (int i = p * 2 * n * 10 + index2; i < (p + 1) * 2 * n * 10 + index2; ++i)
 	{
 		indices[i] = i; //pierwszy wierzcholek kazdego trojkata to srodek kola
 	}
@@ -177,7 +177,7 @@ void calculateCirclePosition(double& x, double& y, double x_s, double y_s, doubl
 int main()
 {
 	int n = 10; //do zrobienia "siatki kuli" - tyle kwadratow bedzie na kazdym rownolezniku i poludniku co daje n*n*2 trojkatow
-	int p = 2 * 10 * n*10;
+	int p = 2 * 10 * n * 10;
 	GLfloat vertices[12000 + 10 * 11 * 10 * 6]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
 	GLuint indices[2000 + 10 * 10 * 9 * 3 * 2]{};
 	vector <double> distances(10, 0.0);
@@ -238,7 +238,7 @@ int main()
 	float rotation = 0.0;
 	double prevTime = glfwGetTime();
 	// Main while loop
-	
+
 	while (!glfwWindowShouldClose(window))
 	{
 		int index1 = 0, index2 = 0;
@@ -309,7 +309,7 @@ int main()
 		Camera camera(width, height, glm::vec3(2.5f, 2.5f, 2.0f));
 
 		glEnable(GL_DEPTH_TEST);
-																						// Tell OpenGL which Shader Program we want to use
+		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 		// Assigns a value to the uniform; NOTE: Must always be done after activating the Shader Program
 		glUniform1f(uniID, 1.5f);
@@ -325,7 +325,7 @@ int main()
 		// Draw primitives, number of indices, datatype of indices, index of indices
 		//glDrawElements(GL_LINES, 2 * 10 * n, GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_LINES, sizeof(indices), GL_UNSIGNED_INT, 0);
-		
+
 		/*for (int i = 0; i < (sizeof(indices)) / 4; ++i)
 		{
 			if (i % 540 == 0)

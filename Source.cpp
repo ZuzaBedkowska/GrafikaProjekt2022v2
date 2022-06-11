@@ -140,10 +140,10 @@ void makeSphere(int n, int& index, int& index2, int p, GLfloat vertices[], GLuin
 
 void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
 {
-	double angle = 2 * PI / (n * 10); //kat miedzy ramionami trojkata
+	double angle = 2 * PI / (n*10); //kat miedzy ramionami trojkata
 	double angle1 = 0.0;
 	int index1 = index;
-	for (int i = p * 2 * 9 * n * 10 + index; i < (p + 1) * 2 * 9 * n * 10 + index; ++i)
+	for (int i = p * 2 * 9 * n*10 + index; i < (p + 1) * 2 * 9 * n*10 + index; ++i)
 	{
 		vertices[i] = x + r * cos(angle1); //pierwszy wierzcholek z f trygonometrycznych
 		i++;
@@ -183,7 +183,7 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 		vertices[i] = 0.0;
 	}
 	int index2_kopia = index2;
-	for (int i = p * 2 * n * 10; i < (p + 1) * 2 * n * 10; ++i)
+	for (int i = p * 2 * n*10; i < (p + 1) * 2 * n*10; ++i)
 	{
 		indices[i + index2] = i + index1 / 9;
 	}
@@ -199,10 +199,10 @@ void calculateCirclePosition(double& x, double& y, double x_s, double y_s, doubl
 
 int main()
 {
-	int n = 10; //do zrobienia "siatki kuli" - tyle kwadratow bedzie na kazdym rownolezniku i poludniku co daje n*n*2 trojkatow
+	int n = 20; //do zrobienia "siatki kuli" - tyle kwadratow bedzie na kazdym rownolezniku i poludniku co daje n*n*2 trojkatow
 	int p = 2 * 10 * n * 10;
-	GLfloat vertices[18000 + 10 * 11 * 10 * 9]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
-	GLuint indices[2000 + 10 * 10 * 9 * 3 * 2]{};
+	GLfloat vertices[36000 + 10 * 21 * 20 * 9]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
+	GLuint indices[4000 + 10 * 20 * 19 * 3 * 2]{};
 	vector <double> distances(10, 0.0);
 	for (int i = 0; i < 9; ++i)
 	{
@@ -373,8 +373,8 @@ int main()
 		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 		camera.ChangePosition(rotation1, rotation2);
 		// Draw primitives, number of indices, datatype of indices, index of indices
-		glDrawElements(GL_TRIANGLES, 5400, GL_UNSIGNED_INT, 0);
-		glDrawElements(GL_LINES, 2000, GL_UNSIGNED_INT, (void*)(5400 * sizeof(GL_UNSIGNED_INT)));
+		glDrawElements(GL_TRIANGLES, 22800, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES, 4000, GL_UNSIGNED_INT, (void*)(22800 * sizeof(GL_UNSIGNED_INT)));
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);

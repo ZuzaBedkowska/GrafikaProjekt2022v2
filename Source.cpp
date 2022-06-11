@@ -195,6 +195,8 @@ void calculateCirclePosition(double& x, double& y, double x_s, double y_s, doubl
 	y = y_s + r * sin(angle);
 }
 
+
+
 int main()
 {
 	int n = 10; //do zrobienia "siatki kuli" - tyle kwadratow bedzie na kazdym rownolezniku i poludniku co daje n*n*2 trojkatow
@@ -231,6 +233,8 @@ int main()
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	
+
 	GLFWwindow* window = glfwCreateWindow(width, height, "Opengl", NULL, NULL);
 	// Error check if the window fails to create
 	if (window == NULL)
@@ -254,9 +258,11 @@ int main()
 	Shader shaderProgram("default.vert", "default.frag");
 
 
+	//Utworzenie obiektu kamery
+	Camera camera(width, height, glm::vec3(2.5f, 2.5f, 2.0f));
 
-
-	float rotation = 0.0;
+	float rotation1 = 0.0;
+	float rotation2 = 0.0;
 	double prevTime = glfwGetTime();
 	// Main while loop
 
@@ -292,24 +298,7 @@ int main()
 		makeSphere(n, index1, index2, 8, vertices, indices, x[8], y[8], z[8], 0.2706, 0.8941, 0.9922, 0.025); //n
 		calculateCirclePosition(x[9], y[9], x[3], y[3], 0.05, angle2[9]);
 		angle2[9] += angle1[9];
-		makeSphere(n, index1, index2, 9, vertices, indices, x[9], y[9], z[9], 0.78, 0.78, 0.78, 0.01); //moon)
-
-		/*for (int i = 0; i < (sizeof(indices)) / 4; ++i)
-		{
-			if (i % 540 == 0)
-			{
-				cout << "sphere nr " << i / 540 << "\n";
-			}
-			if (i % 3 == 0)
-			{
-				cout << i / 3 << ". ";
-			}
-			cout << indices[i] << " ";
-			if (i % 3 == 2)
-			{
-				cout << "\n";
-			}
-		}*/
+		makeSphere(n, index1, index2, 9, vertices, indices, x[9], y[9], z[9], 0.78, 0.78, 0.78, 0.01); //moon
 
 		makeOrbit(n, index1, index2, 0, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[1]); //m orbit
 		makeOrbit(n, index1, index2, 1, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[2]); //v orbit
@@ -344,21 +333,42 @@ int main()
 		//Texture popCat("kotek.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 		//popCat.texUnit(shaderProgram, "tex0", 0);
 
-		Camera camera(width, height, glm::vec3(2.5f, 2.5f, 2.0f));
+		camera.Matrix(45.0f, 1.0f, 10.0f, shaderProgram, "camMatrix");
 
 		glEnable(GL_DEPTH_TEST);
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 		// Assigns a value to the uniform; NOTE: Must always be done after activating the Shader Program
 		glUniform1f(uniID, 1.5f);
+
 		camera.Matrix(45.0f, 1.0f, 10.0f, shaderProgram, "camMatrix");
-		// Binds texture so that is appears in rendering
-		//popCat.Bind();
-		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
-		double crntTime = glfwGetTime();
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{
+			rotation1 += 1.0f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		{
+			rotation1 -= 1.0f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			rotation2 += 1.0f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			rotation2 -= 1.0f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		{
+			rotation1 = 0.0f;
+			rotation2 = 0.0f;
+		}
+		double crntTime = glfwGetTime();
+		model = glm::rotate(model, glm::radians(rotation1), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(rotation2), glm::vec3(1.0f, 0.0f, 0.0f));
+		
 		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw primitives, number of indices, datatype of indices, index of indices
 		glDrawElements(GL_TRIANGLES, 5400, GL_UNSIGNED_INT, 0);

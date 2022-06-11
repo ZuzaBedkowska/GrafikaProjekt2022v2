@@ -21,6 +21,7 @@ public:
 	int height;
 
 	Camera(int width, int height, glm::vec3 position);
+	void ChangePosition(double x, double y, double z);
 	void Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shader, const char* uniform);
 };
 

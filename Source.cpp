@@ -240,7 +240,7 @@ int main()
 
 
 	//Utworzenie obiektu kamery
-	Camera camera(width, height, glm::vec3(2.5f, 2.5f, 2.0f));
+	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 4.0f));
 
 	float rotation1 = 0.0;
 	float rotation2 = 0.0;
@@ -327,19 +327,19 @@ int main()
 		glm::mat4 model = glm::mat4(1.0f);
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
-			rotation1 += 1.0f;
+			rotation1 += 0.01f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
-			rotation1 -= 1.0f;
+			rotation1 -= 0.01f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
-			rotation2 += 1.0f;
+			rotation2 += 0.01f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
-			rotation2 -= 1.0f;
+			rotation2 -= 0.01f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
@@ -347,9 +347,7 @@ int main()
 			rotation2 = 0.0f;
 		}
 		double crntTime = glfwGetTime();
-		model = glm::rotate(model, glm::radians(rotation1), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::rotate(model, glm::radians(rotation2), glm::vec3(1.0f, 0.0f, 0.0f));
-		
+		camera.ChangePosition(rotation1, rotation2, rotation2);
 		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw primitives, number of indices, datatype of indices, index of indices
 		glDrawElements(GL_TRIANGLES, 5400, GL_UNSIGNED_INT, 0);

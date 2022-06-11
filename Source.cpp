@@ -195,7 +195,19 @@ void calculateCirclePosition(double& x, double& y, double x_s, double y_s, doubl
 	y = y_s + r * sin(angle);
 }
 
-
+void makeLightBulb(GLfloat lightVertices[], GLfloat Vertices[])
+{
+	int nVert = 21 * 20 * 9;
+	int j = 0;
+	for (int i = 0; i < nVert; ++i)
+	{
+		if (i % 9 < 3)
+		{
+			lightVertices[j++] = Vertices[i]*0.99;
+		}
+	}
+	return;
+}
 
 int main()
 {
@@ -203,6 +215,7 @@ int main()
 	int p = 2 * 10 * n * 10;
 	GLfloat vertices[36000 + 10 * 21 * 20 * 9]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
 	GLuint indices[4000 + 10 * 20 * 19 * 3 * 2]{};
+	GLfloat lightVertices[21 * 20 * 3]{};
 	vector <double> distances(10, 0.0);
 	for (int i = 0; i < 9; ++i)
 	{
@@ -272,6 +285,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		makeSphere(n, index1, index2, 0, vertices, indices, x[0], y[0], z[0], 1.0, 0.98, 0.2219, 0.08); //s, argumenty od y[0] do 0.08 to kolorki w formacie red, green, blue
+		makeLightBulb(lightVertices, vertices);
 		calculateCirclePosition(x[1], y[1], x_s, y_s, distances[1], angle2[1]);
 		angle2[1] += angle1[1];
 		makeSphere(n, index1, index2, 1, vertices, indices, x[1], y[1], z[1], 0.7412, 0.4314, 0.1176, 0.01); //m

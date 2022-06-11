@@ -8,12 +8,12 @@ Camera::Camera(int width, int height, glm::vec3 position)
 }
 
 
-void Camera::ChangePosition(double x, double y, double z)
+void Camera::ChangePosition(double x, double y)
 {
 	double radius = 4.0;
-	double camX = sin(x) * radius;
+	double camX = sin(x) * cos(y)*radius;
 	double camY = sin(y) * radius;
-	double camZ = cos(x) * cos(y) * radius;
+	double camZ = cos(x) * cos(y)*radius;
 	glm::vec3 pomoc = glm::vec3(camX, camY, camZ);
 	Position = pomoc;
 }

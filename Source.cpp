@@ -20,6 +20,7 @@ constexpr auto PI = 3.14159265358979323846;
 
 void makeSphere(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
 {
+	double lengthInv = 1.0f / r;
 	int index1 = index;
 	int stack = n; //stack - ilosc kwadratow na poludniku
 	int sector = n; //sector - ilosc kwadratow na rownolezniku
@@ -47,10 +48,16 @@ void makeSphere(int n, int& index, int& index2, int p, GLfloat vertices[], GLuin
 			index++;
 			vertices[index] = blue;
 			index++;
+			vertices[index] = newX * lengthInv;
+			index++;
+			vertices[index] = newY * lengthInv;
+			index++;
+			vertices[index] = newZ * lengthInv;
+			index++;
 		}
 	}
 	int k1 = 0, k2 = 0; //numery wierzcholkow do laczenia - k1 to przegladany wierzcholek a k2 to wierzcholek tuz pod nim
-	int index3 = (index1) / 6;
+	int index3 = (index1) / 9;
 	for (int i = 0; i < stack; ++i)
 	{
 		for (int j = 0; j < sector; ++j)
@@ -136,7 +143,7 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 	double angle = 2 * PI / (n * 10); //kat miedzy ramionami trojkata
 	double angle1 = 0.0;
 	int index1 = index;
-	for (int i = p * 2 * 6 * n * 10 + index; i < (p + 1) * 2 * 6 * n * 10 + index; ++i)
+	for (int i = p * 2 * 9 * n * 10 + index; i < (p + 1) * 2 * 9 * n * 10 + index; ++i)
 	{
 		vertices[i] = x + r * cos(angle1); //pierwszy wierzcholek z f trygonometrycznych
 		i++;
@@ -150,6 +157,12 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 		i++;
 		vertices[i] = blue;
 		i++;
+		vertices[i] = 0.0;
+		i++;
+		vertices[i] = 0.0;
+		i++;
+		vertices[i] = 0.0;
+		i++;
 		angle1 += angle;
 		vertices[i] = x + r * cos(angle1); //2 wierzcholek tak samo jak 1, ale przesuniety o kat
 		i++;
@@ -162,11 +175,17 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 		vertices[i] = green;
 		i++;
 		vertices[i] = blue;
+		i++;
+		vertices[i] = 0.0;
+		i++;
+		vertices[i] = 0.0;
+		i++;
+		vertices[i] = 0.0;
 	}
 	int index2_kopia = index2;
-	for (int i = p * 2 * n * 10; i < (p + 1) * 2 * n * 10; ++i)
+	for (int i = p*2*n*10; i < (p + 1)*2 * n * 10; ++i)
 	{
-		indices[i + index2] = i + index1 / 6;
+		indices[i + index2] = i + index1/9; 
 	}
 }
 
@@ -182,7 +201,7 @@ int main()
 {
 	int n = 10; //do zrobienia "siatki kuli" - tyle kwadratow bedzie na kazdym rownolezniku i poludniku co daje n*n*2 trojkatow
 	int p = 2 * 10 * n * 10;
-	GLfloat vertices[12000 + 10 * 11 * 10 * 6]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
+	GLfloat vertices[18000 + 10 * 11 * 10 * 9]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
 	GLuint indices[2000 + 10 * 10 * 9 * 3 * 2]{};
 	vector <double> distances(10, 0.0);
 	for (int i = 0; i < 9; ++i)
@@ -300,8 +319,8 @@ int main()
 		EBO EBO1(indices, sizeof(indices));
 
 		// Links VBO attributes such as coordinates and colors to VAO
-		VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-		VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 9 * sizeof(float), (void*)0);
+		VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 9 * sizeof(float), (void*)(3 * sizeof(float)));
 		// Unbind all to prevent accidentally modifying them
 		VAO1.Unbind();
 		VBO1.Unbind();
@@ -362,7 +381,7 @@ int main()
 		VAO1.Delete();
 		VBO1.Delete();
 		EBO1.Delete();
-	}
+		}
 
 
 

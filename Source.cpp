@@ -1,4 +1,4 @@
-#include<iostream>
+﻿#include<iostream>
 #include <vector>
 
 #include<glad/glad.h>
@@ -140,10 +140,10 @@ void makeSphere(int n, int& index, int& index2, int p, GLfloat vertices[], GLuin
 
 void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint indices[], double x, double y, double z, double red, double green, double blue, double r)
 {
-	double angle = 2 * PI / (n*10); //kat miedzy ramionami trojkata
+	double angle = 2 * PI / (n * 10); //kat miedzy ramionami trojkata
 	double angle1 = 0.0;
 	int index1 = index;
-	for (int i = p * 2 * 9 * n*10 + index; i < (p + 1) * 2 * 9 * n*10 + index; ++i)
+	for (int i = p * 2 * 9 * n * 10 + index; i < (p + 1) * 2 * 9 * n * 10 + index; ++i)
 	{
 		vertices[i] = x + r * cos(angle1); //pierwszy wierzcholek z f trygonometrycznych
 		i++;
@@ -183,7 +183,7 @@ void makeOrbit(int n, int& index, int& index2, int p, GLfloat vertices[], GLuint
 		vertices[i] = 0.0;
 	}
 	int index2_kopia = index2;
-	for (int i = p * 2 * n*10; i < (p + 1) * 2 * n*10; ++i)
+	for (int i = p * 2 * n * 10; i < (p + 1) * 2 * n * 10; ++i)
 	{
 		indices[i + index2] = i + index1 / 9;
 	}
@@ -203,16 +203,16 @@ void makeLightBulb(GLfloat lightVertices[], GLfloat Vertices[])
 	{
 		if (i % 9 < 3)
 		{
-			lightVertices[j++] = Vertices[i]*0.99;
+			lightVertices[j++] = Vertices[i] * 1.1;
 		}
 	}
 	return;
 }
 
+
 int main()
 {
 	int n = 20; //do zrobienia "siatki kuli" - tyle kwadratow bedzie na kazdym rownolezniku i poludniku co daje n*n*2 trojkatow
-	int p = 2 * 10 * n * 10;
 	GLfloat vertices[36000 + 10 * 21 * 20 * 9]{}; //10 orbit po 500 punktow po 6 wsp, 10 planet po 10*11 punktow po 6 wsp
 	GLuint indices[4000 + 10 * 20 * 19 * 3 * 2]{};
 	GLfloat lightVertices[21 * 20 * 3]{};
@@ -264,13 +264,10 @@ int main()
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, width, height);
-
-
-
 	// Generates Shader object using shaders default.vert and default.frag
+	Shader lightShader("light.vert", "light.frag");
 	Shader shaderProgram("default.vert", "default.frag");
-
-
+	//Utworzenie obiektu programu shaderow wywołaniem konstruktora klasu "Shader"
 	//Utworzenie obiektu kamery
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 4.0f));
 
@@ -278,6 +275,23 @@ int main()
 	float rotation2 = 0.0;
 	double prevTime = glfwGetTime();
 	// Main while loop
+	//Pozycja ukladu
+	glm::vec3 cubePos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 cubeModel = glm::mat4(1.0f);
+	cubeModel = glm::translate(cubeModel, cubePos);
+
+	// Pozycja i parametry źródłą światła 
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); //kolory światła
+	glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 lightModel = glm::mat4(1.0f);
+	lightModel = glm::translate(lightModel, lightPos);
+	lightShader.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	shaderProgram.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel));
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -324,6 +338,7 @@ int main()
 		makeOrbit(n, index1, index2, 7, vertices, indices, x_s, y_s, z_s, 1, 1, 1, distances[8]); //n orbit
 		makeOrbit(n, index1, index2, 8, vertices, indices, x[6], y[6], z[6], 1, 1, 1, 0.045);  //s ring
 		makeOrbit(n, index1, index2, 9, vertices, indices, x[3], y[3], z[3], 1, 1, 1, 0.05);  //moon orbit
+		shaderProgram.Activate();
 		VAO VAO1;
 		VAO1.Bind();
 
@@ -335,6 +350,7 @@ int main()
 		// Links VBO attributes such as coordinates and colors to VAO
 		VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 9 * sizeof(float), (void*)0);
 		VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+		VAO1.LinkAttrib(VBO1, 2, 3, GL_FLOAT, 9 * sizeof(float), (void*)(6 * sizeof(float)));
 		// Unbind all to prevent accidentally modifying them
 		VAO1.Unbind();
 		VBO1.Unbind();
@@ -381,14 +397,58 @@ int main()
 			rotation1 = 0.0f;
 			rotation2 = 0.0f;
 		}
-		double crntTime = glfwGetTime();
-		
+
 
 		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 		camera.ChangePosition(rotation1, rotation2);
 		// Draw primitives, number of indices, datatype of indices, index of indices
 		glDrawElements(GL_TRIANGLES, 22800, GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_LINES, 4000, GL_UNSIGNED_INT, (void*)(22800 * sizeof(GL_UNSIGNED_INT)));
+
+
+		// koniec wyswietlania ukladu, czas na swiatelka
+		lightShader.Activate();
+		VAO VAOlight;
+		VAOlight.Bind();
+
+		// Generates Vertex Buffer Object and links it to vertices
+		VBO VBOlight(lightVertices, sizeof(lightVertices));
+		// Generates Element Buffer Object and links it to indices
+		EBO EBOlight(indices, sizeof(indices));
+
+		// Links VBO attributes such as coordinates and colors to VAO
+		VAOlight.LinkAttrib(VBOlight, 0, 3, GL_FLOAT, 9 * sizeof(float), (void*)0);
+		VAOlight.LinkAttrib(VBOlight, 1, 3, GL_FLOAT, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+		VAOlight.LinkAttrib(VBOlight, 2, 3, GL_FLOAT, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+		// Unbind all to prevent accidentally modifying them
+		VAOlight.Unbind();
+		VBOlight.Unbind();
+		EBOlight.Unbind();
+
+		// Gets ID of uniform called "scale"
+		GLuint uniIDlight = glGetUniformLocation(lightShader.ID, "scale");
+		GLuint uniModellight = glGetUniformLocation(lightShader.ID, "model");
+		// Texture
+		//Texture popCat("kotek.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+		//popCat.texUnit(shaderProgram, "tex0", 0);
+
+		camera.updateMatrix(45.0f, 1.0f, 10.0f);
+		camera.Matrix(lightShader, "camMatrix");
+
+		glEnable(GL_DEPTH_TEST);
+		// Tell OpenGL which Shader Program we want to use
+		// Assigns a value to the uniform; NOTE: Must always be done after activating the Shader Program
+		glUniform1f(uniIDlight, 1.5f);
+
+		camera.updateMatrix(45.0f, 1.0f, 10.0f);
+		camera.Matrix(lightShader, "camMatrix");
+		VAOlight.Bind();
+		glm::mat4 modelLight = glm::mat4(1.0f);
+
+		glUniformMatrix4fv(uniModellight, 1, GL_FALSE, glm::value_ptr(modelLight));
+		// Draw primitives, number of indices, datatype of indices, index of indices
+		glDrawElements(GL_TRIANGLES, 2280, GL_UNSIGNED_INT, 0);
+
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
@@ -397,6 +457,9 @@ int main()
 		VAO1.Delete();
 		VBO1.Delete();
 		EBO1.Delete();
+		VAOlight.Delete();
+		VBOlight.Delete();
+		EBOlight.Delete();
 	}
 
 

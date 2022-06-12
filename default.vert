@@ -9,12 +9,13 @@ out vec3 Normal;
 out vec3 currentPosition;
 
 uniform mat4 model;
-uniform mat4 camMatrix;
+uniform mat4 camMatrix; // iloczyn macierzy widoku i projekcji
 
 void main()
 {
 	currentPosition = vec3(model * vec4 (position, 1.0f));
-    gl_Position = camMatrix * vec4(currentPosition, 1.0);
+  gl_Position = camMatrix * vec4(currentPosition, 1.0);
 	Color = color;
 	Normal = normal;
 }
+

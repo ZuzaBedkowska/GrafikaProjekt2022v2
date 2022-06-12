@@ -43,8 +43,6 @@ vec4 pointLight()
 
 void main()
 {
-
-
 	// outputs final color
 	outColor = pointLight();
 }
